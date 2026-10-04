@@ -5,6 +5,8 @@
 // --sky-wash and --sky-glow in globals.css. The glows sit above the wash so
 // they still read where dark has faded the photo out. The blur smooths banding
 // in the photo, and the bleed keeps its soft edges off screen while it drifts.
+// Dark masks the whole sky to the top 30% (--sky-mask) and lifts the glows
+// into that band so their drift still shows above the black.
 const glow =
   "absolute size-[100vmax] rounded-full bg-[radial-gradient(closest-side,var(--sky-glow),transparent)] will-change-transform motion-reduce:animate-none"
 
@@ -12,12 +14,12 @@ export function SkyBackdrop() {
   return (
     <div
       aria-hidden="true"
-      className="pointer-events-none fixed inset-0 -z-10 overflow-hidden"
+      className="pointer-events-none fixed inset-0 -z-10 overflow-hidden mask-(--sky-mask)"
     >
       <div className="absolute -inset-x-16 -inset-y-[10%] -scale-y-100 animate-sky-drift bg-[url('/sky.jpg')] bg-cover bg-center blur-2xl saturate-[0.85] will-change-transform motion-reduce:animate-none dark:scale-y-100" />
       <div className="absolute inset-0 bg-(image:--sky-wash)" />
-      <div className={`${glow} top-[5%] left-[10%] -translate-x-1/2 animate-sky-glow`} />
-      <div className={`${glow} top-[45%] right-[5%] translate-x-1/2 animate-sky-glow-2`} />
+      <div className={`${glow} top-[5%] left-[10%] -translate-x-1/2 animate-sky-glow dark:top-[calc(9vh-50vmax)]`} />
+      <div className={`${glow} top-[45%] right-[5%] translate-x-1/2 animate-sky-glow-2 dark:top-[calc(18vh-50vmax)]`} />
     </div>
   )
 }

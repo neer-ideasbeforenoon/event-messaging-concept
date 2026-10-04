@@ -47,8 +47,10 @@ const entries = [
     description: "Talk to attendees, or about arrival, accessibility or your attendance.",
     cta: "Choose a booking",
     href: "/my-events",
-    // Another section of the app, so the header holds still (globals.css).
+    // Another section of the app, so the header holds still (globals.css)
+    // and the page is prefetched like the tab bar's.
     transitionTypes: ["nav-forward", "nav-section"],
+    prefetch: true,
     illustration: <BookingCalendar />,
   },
   {
@@ -190,11 +192,12 @@ function EntryCard({ entry }: { entry: (typeof entries)[number] }) {
   const body = (
     <>
       {/* A soft brand glow that rises a little way from the bottom edge on
-          hover or focus. It sits behind the content. In dark the brand solid
-          is too close to the card, so the glow uses the lighter brand step. */}
+          hover or focus. It sits behind the content. Not the brand solid: in
+          light it is so dark it washes the card grey, and in dark it is too
+          close to the card, so each mode uses a lighter brand step. */}
       <span
         aria-hidden="true"
-        className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-1/2 bg-linear-to-t from-brand-9/35 via-brand-9/10 to-transparent opacity-0 transition-opacity duration-300 ease-out group-hover:opacity-100 group-focus-visible:opacity-100 dark:from-brand-10/60 dark:via-brand-10/20"
+        className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-1/2 bg-linear-to-t from-brand-7/40 via-brand-7/12 to-transparent opacity-0 transition-opacity duration-300 ease-out group-hover:opacity-100 group-focus-visible:opacity-100 dark:from-brand-10/60 dark:via-brand-10/20"
       />
       <div className="aspect-[16/10] [&>*]:size-full">{entry.illustration}</div>
       <div className="flex-1">
@@ -216,6 +219,7 @@ function EntryCard({ entry }: { entry: (typeof entries)[number] }) {
     <Link
       href={entry.href}
       transitionTypes={entry.transitionTypes}
+      prefetch={entry.prefetch}
       className={className}
     >
       {body}

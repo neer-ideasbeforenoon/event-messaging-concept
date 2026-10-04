@@ -401,6 +401,7 @@
         color-mix(in oklab, var(--background) 52%, transparent) 100%
     );
     --sky-glow: rgb(255 255 255 / 0.65);
+    --sky-mask: none;
 }
 
 .dark {
@@ -544,6 +545,23 @@
         var(--background) 100%
     );
     --sky-glow: rgb(139 179 214 / 0.2);
+    /* Dark keeps the sky to the top 30% of the screen and leaves the rest
+       black. A cosine ease from 3% to 37.5%, so the blue thins out gradually
+       and its last trace lingers just past 30% instead of stopping on a line. */
+    --sky-mask: linear-gradient(
+        to bottom,
+        #000 3%,
+        rgb(0 0 0 / 0.976) 6.5%,
+        rgb(0 0 0 / 0.905) 9.9%,
+        rgb(0 0 0 / 0.794) 13.3%,
+        rgb(0 0 0 / 0.655) 16.8%,
+        rgb(0 0 0 / 0.500) 20.2%,
+        rgb(0 0 0 / 0.345) 23.7%,
+        rgb(0 0 0 / 0.206) 27.1%,
+        rgb(0 0 0 / 0.095) 30.6%,
+        rgb(0 0 0 / 0.024) 34%,
+        transparent 37.5%
+    );
 }
 
 /* A torn paper edge along the bottom: a strip of 45° teeth, each twice as
@@ -647,9 +665,49 @@ html:active-view-transition-type(nav-section)::view-transition-old(root) {
 html:active-view-transition-type(nav-section)::view-transition-new(root) {
     animation: none;
 }
+/* Sections sit side by side, so switching is one move along that axis. The
+   old page starts fading on the click and accelerates away; the new one
+   picks up the motion at speed just before it is gone, and settles. The two
+   barely overlap, so there is no double exposure and no empty beat. */
+html:active-view-transition-type(nav-section)::view-transition-old(.nav-forward),
+html:active-view-transition-type(nav-section)::view-transition-old(.nav-back) {
+    animation:
+        150ms linear both page-fade reverse,
+        150ms cubic-bezier(0.4, 0, 1, 1) both section-leave;
+}
+html:active-view-transition-type(nav-section)::view-transition-new(.nav-forward),
+html:active-view-transition-type(nav-section)::view-transition-new(.nav-back) {
+    animation: 340ms cubic-bezier(0, 0, 0.2, 1) 100ms both section-arrive;
+}
+/* The tab bar on the same clock: the pill slides and the icons glide to
+   their new places. The old label is gone before an icon can pass through
+   it, and the new one fades in once the pill is under it. */
+::view-transition-group(.tab-move) {
+    animation-duration: 450ms;
+    animation-timing-function: var(--ease-fluid);
+}
+::view-transition-old(.tab-label) {
+    animation: 80ms linear both page-fade reverse;
+}
+::view-transition-new(.tab-label) {
+    animation: 220ms ease-out 160ms both page-fade;
+}
 @keyframes page-fade {
     from {
         opacity: 0;
+    }
+}
+/* The old page leaves half as far as the new one arrives from, so the
+   handoff carries one speed across. */
+@keyframes section-leave {
+    to {
+        translate: calc(var(--slide-offset) / 2);
+    }
+}
+@keyframes section-arrive {
+    from {
+        opacity: 0;
+        translate: var(--slide-offset);
     }
 }
 @keyframes page-slide {

@@ -10,6 +10,7 @@ export function SiteHeader() {
         <Link
           href="/"
           transitionTypes={["nav-forward", "nav-section"]}
+          prefetch
           aria-label="Gather"
           className="relative z-10 w-fit shrink-0 rounded-md outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
         >
