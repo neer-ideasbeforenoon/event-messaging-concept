@@ -12,4 +12,4 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 Read [PRODUCT.md](./PRODUCT.md) before changing this app.
 
-This repo is the customer Messages screen for an event platform. Build that one screen with Next.js, Tailwind CSS, and shadcn/ui. Keep the two conversation groups on the same screen. Do not recreate All, Support, and Events tabs.
+This repo is the customer Messages screen for an event platform. Build that one screen with Next.js, Tailwind CSS, and shadcn/ui. Keep the three conversation groups (People, Event conversations, Support) on the same screen. Do not recreate All, Support, and Events tabs.

@@ -8,6 +8,94 @@
     --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
     --font-heading: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
     --font-mono: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+    /* The sky backdrop drifts and two soft lights wander over it in opposite
+       directions. The photo only changes top to bottom, so the drift is
+       vertical. Slow enough to read as weather, quick enough to notice. */
+    --animate-sky-drift: sky-drift 26s ease-in-out infinite alternate;
+    --animate-sky-glow: sky-glow 20s ease-in-out infinite alternate;
+    --animate-sky-glow-2: sky-glow 27s ease-in-out -9s infinite alternate-reverse;
+
+    /* Unread: a ring grows out of the dot and fades, then rests before the
+       next beat. Calm enough to sit in a list, clear enough to be noticed. */
+    --animate-attention: attention 2.4s cubic-bezier(0, 0, 0.2, 1) infinite;
+
+    /* The one ease for things the customer moves: tabs, panels, pages. Quick
+       to leave, soft to land, so a change reads as motion and not a cut. */
+    --ease-fluid: cubic-bezier(0.32, 0.72, 0, 1);
+
+    /* Composer focus: a light grows from a point on the border, glides once
+       round the edge and shrinks back to a point where it began. Head and
+       tail follow the same sine ease, the tail a beat behind, so the light
+       speeds up and settles without stalling. The frames are samples of
+       that curve, played linearly. The stroke uses pathLength 100, so
+       lengths are percentages. */
+    --animate-composer-glow: composer-glow 2.8s linear both;
+
+    @keyframes composer-glow {
+        0% { stroke-dasharray: 0 100; stroke-dashoffset: 0; opacity: 0; }
+        4% { stroke-dasharray: 0.51 99.49; stroke-dashoffset: 0; }
+        8% { stroke-dasharray: 2.03 97.97; stroke-dashoffset: 0; opacity: var(--glow-opacity, 0.6); }
+        12% { stroke-dasharray: 4.52 95.48; stroke-dashoffset: 0; }
+        16% { stroke-dasharray: 7.43 92.57; stroke-dashoffset: -0.51; }
+        20% { stroke-dasharray: 10.19 89.81; stroke-dashoffset: -2.03; }
+        24% { stroke-dasharray: 12.74 87.26; stroke-dashoffset: -4.52; }
+        28% { stroke-dasharray: 15.03 84.97; stroke-dashoffset: -7.94; }
+        32% { stroke-dasharray: 17.02 82.98; stroke-dashoffset: -12.21; }
+        36% { stroke-dasharray: 18.66 81.34; stroke-dashoffset: -17.26; }
+        40% { stroke-dasharray: 19.92 80.08; stroke-dashoffset: -22.97; }
+        44% { stroke-dasharray: 20.77 79.23; stroke-dashoffset: -29.23; }
+        48% { stroke-dasharray: 21.2 78.8; stroke-dashoffset: -35.91; }
+        52% { stroke-dasharray: 21.2 78.8; stroke-dashoffset: -42.88; }
+        56% { stroke-dasharray: 20.77 79.23; stroke-dashoffset: -50; }
+        60% { stroke-dasharray: 19.92 80.08; stroke-dashoffset: -57.12; }
+        64% { stroke-dasharray: 18.66 81.34; stroke-dashoffset: -64.09; }
+        68% { stroke-dasharray: 17.02 82.98; stroke-dashoffset: -70.77; }
+        72% { stroke-dasharray: 15.03 84.97; stroke-dashoffset: -77.03; }
+        76% { stroke-dasharray: 12.74 87.26; stroke-dashoffset: -82.74; }
+        80% { stroke-dasharray: 10.19 89.81; stroke-dashoffset: -87.79; }
+        84% { stroke-dasharray: 7.43 92.57; stroke-dashoffset: -92.06; }
+        88% { stroke-dasharray: 4.52 95.48; stroke-dashoffset: -95.48; }
+        92% { stroke-dasharray: 2.03 97.97; stroke-dashoffset: -97.97; opacity: var(--glow-opacity, 0.6); }
+        96% { stroke-dasharray: 0.51 99.49; stroke-dashoffset: -99.49; }
+        100% { stroke-dasharray: 0 100; stroke-dashoffset: -100; opacity: 0; }
+    }
+    @keyframes sky-drift {
+        0% {
+            transform: translate3d(0, -6%, 0) scale(1.04);
+        }
+        50% {
+            transform: translate3d(-1.5%, 7%, 0) scale(1.14);
+        }
+        100% {
+            transform: translate3d(1.5%, 0, 0) scale(1.08);
+        }
+    }
+    @keyframes attention {
+        0% {
+            transform: scale(1);
+            opacity: 0.7;
+        }
+        70%,
+        100% {
+            transform: scale(3.2);
+            opacity: 0;
+        }
+    }
+    @keyframes sky-glow {
+        0% {
+            transform: translate3d(-30%, -15%, 0) scale(0.9);
+            opacity: 0.5;
+        }
+        50% {
+            transform: translate3d(25%, 12%, 0) scale(1.1);
+            opacity: 1;
+        }
+        100% {
+            transform: translate3d(-5%, 30%, 0) scale(1);
+            opacity: 0.65;
+        }
+    }
 }
 
 @theme inline {
@@ -49,6 +137,10 @@
     --radius-2xl: calc(var(--radius) * 1.8);
     --radius-3xl: calc(var(--radius) * 2.2);
     --radius-4xl: calc(var(--radius) * 2.6);
+    --text-display: clamp(2.25rem, 1.6rem + 2.4vw, 3.5rem);
+    --text-display--line-height: 1.08;
+    --text-display--letter-spacing: -0.03em;
+    --text-display--font-weight: 600;
     --text-h1: 1.5rem;
     --text-h1--line-height: 1.3;
     --text-h1--letter-spacing: -0.01em;
@@ -152,6 +244,7 @@
     --color-destructive-11: var(--destructive-11);
     --color-destructive-12: var(--destructive-12);
     --color-mark: var(--mark);
+    --color-attention: var(--attention);
     --color-well: var(--well);
     --color-hover: var(--hover);
     --color-warning: var(--warning);
@@ -171,30 +264,30 @@
     color-scheme: light;
 
     /* Step 9 is the solid in both modes. Steps 1–8 are washes. Steps 10–12 go darker. */
-    --brand-1: #f6f9f7;
-    --brand-2: #dbe6e1;
-    --brand-3: #c1d4cb;
-    --brand-4: #a7c2b5;
-    --brand-5: #8db0a0;
-    --brand-6: #749e8b;
-    --brand-7: #5a8d77;
-    --brand-8: #3f7c63;
-    --brand-9: #1a4f3b;
-    --brand-10: #183c2e;
-    --brand-11: #133024;
-    --brand-12: #10251c;
-    --neutral-1: #eff4f0;
-    --neutral-2: #e1e9e2;
-    --neutral-3: #d8dfd9;
-    --neutral-4: #cfd7d0;
-    --neutral-5: #ccd4cd;
-    --neutral-6: #b6beb7;
-    --neutral-7: #a0a8a1;
-    --neutral-8: #8b938c;
-    --neutral-9: #767e77;
-    --neutral-10: #626a63;
-    --neutral-11: #4f5750;
-    --neutral-12: #101311;
+    --brand-1: #f6f9fa;
+    --brand-2: #dce4eb;
+    --brand-3: #c2d1dd;
+    --brand-4: #a8becf;
+    --brand-5: #8fabc1;
+    --brand-6: #7698b2;
+    --brand-7: #5d86a4;
+    --brand-8: #437496;
+    --brand-9: #163a52;
+    --brand-10: #0e2a3d;
+    --brand-11: #081f2f;
+    --brand-12: #061621;
+    --neutral-1: #eef4f6;
+    --neutral-2: #dee8ed;
+    --neutral-3: #d6dfe2;
+    --neutral-4: #ccd6db;
+    --neutral-5: #c9d3d8;
+    --neutral-6: #b3bdc2;
+    --neutral-7: #9da7ac;
+    --neutral-8: #889297;
+    --neutral-9: #737d82;
+    --neutral-10: #5f696e;
+    --neutral-11: #4c565b;
+    --neutral-12: #101314;
     --warning-1: #fdf9f5;
     --warning-2: #f9eee2;
     --warning-3: #f5e3ce;
@@ -265,6 +358,7 @@
     --input: var(--neutral-5);
     --ring: var(--brand-9);
     --mark: var(--brand-9);
+    --attention: var(--brand-9);
     --well: var(--neutral-3);
     --hover: var(--neutral-4);
     --warning: var(--warning-9);
@@ -290,36 +384,53 @@
     --sidebar-accent-foreground: var(--neutral-12);
     --sidebar-border: var(--neutral-5);
     --sidebar-ring: var(--brand-9);
+
+    /* Page colour laid over the sky photo, eased so the fade has no visible
+       edge. Light holds the page solid under the header and lets the blue
+       through toward the tab bar. */
+    --sky-wash: linear-gradient(
+        to bottom,
+        var(--background) 0%,
+        color-mix(in oklab, var(--background) 97%, transparent) 12%,
+        color-mix(in oklab, var(--background) 91%, transparent) 25%,
+        color-mix(in oklab, var(--background) 83%, transparent) 38%,
+        color-mix(in oklab, var(--background) 75%, transparent) 50%,
+        color-mix(in oklab, var(--background) 67%, transparent) 62%,
+        color-mix(in oklab, var(--background) 60%, transparent) 74%,
+        color-mix(in oklab, var(--background) 55%, transparent) 87%,
+        color-mix(in oklab, var(--background) 52%, transparent) 100%
+    );
+    --sky-glow: rgb(255 255 255 / 0.65);
 }
 
 .dark {
     color-scheme: dark;
 
     /* Same step names. Step 1 is the well, step 12 is the light ink. Step 9 stays the solid. */
-    --brand-1: #060d09;
-    --brand-2: #07110d;
-    --brand-3: #071610;
-    --brand-4: #091b13;
-    --brand-5: #091f16;
-    --brand-6: #0a241a;
-    --brand-7: #0a291d;
-    --brand-8: #0b2e21;
-    --brand-9: #1a4f3b;
-    --brand-10: #35634f;
-    --brand-11: #8aa799;
-    --brand-12: #d3e2db;
-    --neutral-1: #050706;
-    --neutral-2: #111311;
-    --neutral-3: #191b19;
-    --neutral-4: #1e201e;
-    --neutral-5: #232623;
-    --neutral-6: #282c29;
-    --neutral-7: #2e312e;
-    --neutral-8: #333734;
-    --neutral-9: #5c615c;
-    --neutral-10: #878f89;
-    --neutral-11: #b6bfb8;
-    --neutral-12: #e1e9e2;
+    --brand-1: #060c10;
+    --brand-2: #080f16;
+    --brand-3: #08141d;
+    --brand-4: #091923;
+    --brand-5: #0a1c28;
+    --brand-6: #0c202f;
+    --brand-7: #0c2535;
+    --brand-8: #0f293c;
+    --brand-9: #163a52;
+    --brand-10: #375d77;
+    --brand-11: #8ba3b5;
+    --brand-12: #d4e0e9;
+    --neutral-1: #050708;
+    --neutral-2: #101314;
+    --neutral-3: #181b1c;
+    --neutral-4: #1d2021;
+    --neutral-5: #222627;
+    --neutral-6: #272c2e;
+    --neutral-7: #2d3132;
+    --neutral-8: #323739;
+    --neutral-9: #5a6163;
+    --neutral-10: #858e93;
+    --neutral-11: #b4bec3;
+    --neutral-12: #dee8ed;
     --warning-1: #120902;
     --warning-2: #231707;
     --warning-3: #362611;
@@ -390,6 +501,9 @@
     --input: var(--neutral-8);
     --ring: var(--neutral-12);
     --mark: var(--neutral-12);
+    /* Brand-11 alone reads grey on the dark card. Mixed toward brand-10 it
+       reads blue and still clears 4.5:1 on the card. */
+    --attention: color-mix(in oklab, var(--brand-10) 40%, var(--brand-11));
     --well: var(--neutral-1);
     --hover: var(--neutral-6);
     --warning: var(--warning-9);
@@ -414,6 +528,41 @@
     --sidebar-accent-foreground: var(--neutral-12);
     --sidebar-border: var(--neutral-8);
     --sidebar-ring: var(--neutral-12);
+
+    /* Dark lets the navy through under the header and settles into the page
+       before the photo's pale end. */
+    --sky-wash: linear-gradient(
+        to bottom,
+        color-mix(in oklab, var(--background) 35%, transparent) 0%,
+        color-mix(in oklab, var(--background) 40%, transparent) 12%,
+        color-mix(in oklab, var(--background) 50%, transparent) 25%,
+        color-mix(in oklab, var(--background) 63%, transparent) 38%,
+        color-mix(in oklab, var(--background) 76%, transparent) 50%,
+        color-mix(in oklab, var(--background) 87%, transparent) 62%,
+        color-mix(in oklab, var(--background) 94%, transparent) 74%,
+        color-mix(in oklab, var(--background) 98%, transparent) 87%,
+        var(--background) 100%
+    );
+    --sky-glow: rgb(139 179 214 / 0.2);
+}
+
+/* A torn paper edge along the bottom: a strip of 45° teeth, each twice as
+   wide as it is tall. Used by the receipt tile for support tickets. */
+@utility receipt-edge {
+    --tooth: 3px;
+    mask:
+        linear-gradient(#000 0 0) top / 100% calc(100% - var(--tooth)) no-repeat,
+        conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg)
+            bottom / calc(var(--tooth) * 2) var(--tooth) repeat-x;
+}
+
+/* Scrolls without showing a scrollbar. For panels inside the thread
+   container, where a track would cut into the rounded frame. */
+@utility scrollbar-none {
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+        display: none;
+    }
 }
 
 @layer base {
@@ -425,5 +574,84 @@
     }
   html {
     @apply font-sans;
+    }
+}
+
+
+/* Tabs with a TabsIndicator. Once the indicator has measured the open
+   trigger it carries the open surface and slides between triggers, so the
+   open trigger shows its rest surface underneath (--tab-rest, transparent
+   unless the trigger sets it). Until then, in the server HTML, the open
+   trigger paints its own surface. Unlayered, so it wins over utilities. */
+[data-slot="tabs-list"][data-indicator="ready"]
+    > [data-slot="tabs-trigger"][data-state="active"] {
+    background-color: var(--tab-rest, transparent);
+    border-color: var(--tab-rest-border, transparent);
+}
+[data-slot="tabs-list"][data-indicator="ready"]
+    > [data-slot="tabs-trigger"][data-state="active"]:not(:focus-visible) {
+    box-shadow: none;
+}
+
+/* Page changes. Opening a thread slides the inbox out to the left and the
+   thread in from the right; Back reverses it. Browser back and forward carry
+   no direction, so they crossfade. The old page leaves quickly and the new
+   one lands gently, so the two never compete. */
+::view-transition {
+    pointer-events: none;
+}
+::view-transition-old(.nav-forward),
+::view-transition-old(.nav-back) {
+    animation:
+        150ms ease-in both page-fade reverse,
+        400ms var(--ease-fluid) both page-slide reverse;
+}
+::view-transition-new(.nav-forward),
+::view-transition-new(.nav-back) {
+    animation:
+        220ms ease-out 120ms both page-fade,
+        400ms var(--ease-fluid) both page-slide;
+}
+::view-transition-old(.nav-forward) {
+    --slide-offset: -48px;
+}
+::view-transition-new(.nav-forward) {
+    --slide-offset: 48px;
+}
+::view-transition-old(.nav-back) {
+    --slide-offset: 48px;
+}
+::view-transition-new(.nav-back) {
+    --slide-offset: -48px;
+}
+::view-transition-old(.page-fade) {
+    animation: 150ms ease-in both page-fade reverse;
+}
+::view-transition-new(.page-fade) {
+    animation: 220ms ease-out 100ms both page-fade;
+}
+/* Everything outside the page (the sky, the inbox header) crossfades, and
+   a theme switch crossfades the whole screen. */
+::view-transition-old(root),
+::view-transition-new(root) {
+    animation-duration: 300ms;
+    animation-timing-function: ease-out;
+}
+@keyframes page-fade {
+    from {
+        opacity: 0;
+    }
+}
+@keyframes page-slide {
+    from {
+        translate: var(--slide-offset);
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    ::view-transition-old(*),
+    ::view-transition-new(*),
+    ::view-transition-group(*) {
+        animation-duration: 0s !important;
+        animation-delay: 0s !important;
     }
 }

@@ -17,6 +17,7 @@ Inter only, weights 400, 500, 600, and 700. Loaded once with `next/font`. Body, 
 
 | Class | Size / weight | Line height | Tracking | Use |
 | --- | --- | --- | --- | --- |
+| `text-display` | 36–56 fluid / 600 | 1.08 | -0.03em | Landing greeting |
 | `text-h1` | 24 / 700 | 1.3 | -0.01em | Page title |
 | `text-h2` | 20 / 600 | 1.3 | -0.01em | Section |
 | `text-h3` | 16 / 600 | 1.3 | -0.01em | Card title |
@@ -33,22 +34,22 @@ A new size is two edits: the `--text-*` tokens in `src/app/globals.css`, and `FO
 
 Each family is a 12-step ramp in `src/app/globals.css`. Step 9 is the solid, the same hex in light and dark. Steps 1–8 are washes. Steps 10–12 run darker in light. In dark the ramp flips, so step 12 is the light ink and step 9 stays the solid. Screens use the role tokens. The steps are the scale those roles are built from.
 
-Brand step 9 is `#1A4F3B`. Neutrals carry a quiet green undertone so the page belongs to that green. White on `#1A4F3B` is 9.44:1. The green on the dark page is 1.98:1, so in dark the green is a ground only and the mark is `neutral-12`.
+Brand step 9 is `#163A52`. Neutrals carry a quiet blue undertone so the page belongs to that blue. White on `#163A52` is 11.92:1. The blue on the dark page is 1.57:1, so in dark the blue is a ground only and the mark is `neutral-12`.
 
 | Step | Light brand | Dark brand | Light neutral | Dark neutral |
 | --- | --- | --- | --- | --- |
-| 1 | `#F6F9F7` | `#060D09` | `#EFF4F0` | `#050706` |
-| 2 | `#DBE6E1` | `#07110D` | `#E1E9E2` | `#111311` |
-| 3 | `#C1D4CB` | `#071610` | `#D8DFD9` | `#191B19` |
-| 4 | `#A7C2B5` | `#091B13` | `#CFD7D0` | `#1E201E` |
-| 5 | `#8DB0A0` | `#091F16` | `#CCD4CD` | `#232623` |
-| 6 | `#749E8B` | `#0A241A` | `#B6BEB7` | `#282C29` |
-| 7 | `#5A8D77` | `#0A291D` | `#A0A8A1` | `#2E312E` |
-| 8 | `#3F7C63` | `#0B2E21` | `#8B938C` | `#333734` |
-| 9 | `#1A4F3B` | `#1A4F3B` | `#767E77` | `#5C615C` |
-| 10 | `#183C2E` | `#35634F` | `#626A63` | `#878F89` |
-| 11 | `#133024` | `#8AA799` | `#4F5750` | `#B6BFB8` |
-| 12 | `#10251C` | `#D3E2DB` | `#101311` | `#E1E9E2` |
+| 1 | `#F6F9FA` | `#060C10` | `#EEF4F6` | `#050708` |
+| 2 | `#DCE4EB` | `#080F16` | `#DEE8ED` | `#101314` |
+| 3 | `#C2D1DD` | `#08141D` | `#D6DFE2` | `#181B1C` |
+| 4 | `#A8BECF` | `#091923` | `#CCD6DB` | `#1D2021` |
+| 5 | `#8FABC1` | `#0A1C28` | `#C9D3D8` | `#222627` |
+| 6 | `#7698B2` | `#0C202F` | `#B3BDC2` | `#272C2E` |
+| 7 | `#5D86A4` | `#0C2535` | `#9DA7AC` | `#2D3132` |
+| 8 | `#437496` | `#0F293C` | `#889297` | `#323739` |
+| 9 | `#163A52` | `#163A52` | `#737D82` | `#5A6163` |
+| 10 | `#0E2A3D` | `#375D77` | `#5F696E` | `#858E93` |
+| 11 | `#081F2F` | `#8BA3B5` | `#4C565B` | `#B4BEC3` |
+| 12 | `#061621` | `#D4E0E9` | `#101314` | `#DEE8ED` |
 
 | Role | Light | Dark | Use |
 | --- | --- | --- | --- |
@@ -62,6 +63,7 @@ Brand step 9 is `#1A4F3B`. Neutrals carry a quiet green undertone so the page be
 | `primary` | `brand-9` | `brand-9` | Brand ground. Buttons. |
 | `mark` | `brand-9` | `neutral-12` | Brand as type, icons, and focus |
 | `ring` | `brand-9` | `neutral-12` | Focus ring |
+| `attention` | `brand-9` | `brand-11` mixed 40% toward `brand-10` | Unread dot, pulsing. Brand blue that still reads on the dark page. |
 
 The surface order is well, then page, then card, in both modes.
 
@@ -76,11 +78,17 @@ Status families are the same 12-step shape. Step 9 stays put in dark. A status r
 
 ## Who the screen is for
 
-A customer. They use Messages to talk to an event organizer, or to the platform's back office.
+A customer. They use Messages to talk to other people, such as speakers and fellow attendees, to an event organizer, or to the platform's back office.
 
-## Two groups
+## Three groups
 
-The inbox is split by who will reply. Both groups sit on this same screen.
+The inbox is split by who will reply. All three groups sit on this same screen, as People, Event conversations, and Support, in that order. Event conversations is the default.
+
+### People
+
+Direct threads with another person, such as a speaker or a fellow attendee. There is one thread per person.
+
+The person replies for themselves, so the row shows their name, who they are to the customer (for example "Speaker, Design Futures Forum"), and the latest message. A thread can mention an event, but it is not the organizer's thread for that event, so it stays in People.
 
 ### Event conversations
 
@@ -96,11 +104,11 @@ Tickets with the platform, for invoices, payments, or the account. A ticket can 
 
 ## Interactions on this screen
 
-- Switch between event conversations and support.
+- Switch between people, event conversations, and support.
 - Select a conversation and read its thread.
 - Reply in the open thread.
 
-Starting a thread from an event card, from a booking, or from account and billing is outside this screen. Those entries only explain where a thread comes from.
+Starting a thread from an event card, from a booking, from a speaker or attendee profile, or from account and billing is outside this screen. Those entries only explain where a thread comes from.
 
 ## What not to copy from the earlier wireframe
 
