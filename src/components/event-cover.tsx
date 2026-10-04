@@ -1,5 +1,7 @@
 import type { CSSProperties, ReactNode } from "react"
 import Image from "next/image"
+import { PosterArt, posterGround, type PosterName } from "@/components/event-posters"
+import { coverArtFor } from "@/lib/bookings"
 import { cn } from "@/lib/utils"
 
 // Key art for an event, the way an organizer's listing would carry it: the
@@ -49,6 +51,39 @@ const covers: Record<string, Cover> = {
   },
 }
 
+// Grounds the type reads on in light ink. The rest take dark ink.
+const darkPosters: PosterName[] = ["globe", "blocks", "moon", "run", "candles"]
+
+// Key art for a stand-in booking, set in the same layout as the covers above:
+// the poster's ground, its art tucked into the lower right, and the name over
+// it.
+function posterCover(title: string): Cover | undefined {
+  const booking = coverArtFor(title)
+  if (!booking) return undefined
+  const date = new Date(`${booking.starts.slice(0, 10)}T00:00:00Z`)
+  return {
+    ground: posterGround(booking.poster),
+    ink: darkPosters.includes(booking.poster) ? "#F4F5F0" : "#17181C",
+    top: [booking.host, booking.starts.slice(0, 4)],
+    lines: booking.lines,
+    bottom: [
+      date.toLocaleDateString("en-GB", {
+        timeZone: "UTC",
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      }),
+      booking.address.split(", ")[0],
+    ],
+    art: (
+      <PosterArt
+        name={booking.poster}
+        className="absolute right-[-12%] bottom-[-10%] size-[78%]"
+      />
+    ),
+  }
+}
+
 // Fine film grain, so the flat fills read as printed rather than vector.
 const grain = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0.9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`
 
@@ -78,7 +113,7 @@ export function EventCover({
     )
   }
 
-  const cover = covers[title]
+  const cover = covers[title] ?? posterCover(title)
   if (!cover) return null
 
   return (

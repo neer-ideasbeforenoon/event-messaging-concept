@@ -7,6 +7,7 @@ import {
   customerName,
   eventThread,
   events,
+  newOrganizerThread,
   peopleAt,
   type PersonConversation,
 } from "@/lib/conversations"
@@ -108,7 +109,7 @@ export function attendeesFor(
 // once booked.
 export function attendeesAt(event: string) {
   const known = peopleAt(event)
-  const thread = eventThread(event)
+  const thread = eventThread(event) ?? newOrganizerThread(slug(event))
   const booked = thread?.group === "event" && Boolean(thread.booking)
   return attendeesFor(
     event,

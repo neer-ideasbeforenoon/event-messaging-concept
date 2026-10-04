@@ -15,6 +15,7 @@ import { ConversationTabs } from "@/components/conversation-tabs"
 import { BookingCalendar } from "@/components/booking-calendar"
 import { EventStack } from "@/components/event-stack"
 import { PageTransition } from "@/components/page-transition"
+import { SupportDialog } from "@/components/support-dialog"
 import { SupportWheel } from "@/components/support-wheel"
 import {
   TabsContent,
@@ -29,28 +30,31 @@ import {
   withYou,
   type Conversation,
 } from "@/lib/conversations"
-// These explain where each kind of thread starts. Starting one is outside
-// this screen, so each links to the place that owns the entry point.
+// These explain where each kind of thread starts. Organizer threads start
+// elsewhere, so those link to the place that owns the entry point. A support
+// ticket starts right here, in a dialog over the inbox.
 const entries = [
   {
     title: "Before you book",
     description: "Ask about the event, group rates or what’s included.",
     cta: "Contact an organizer",
     href: "/discover",
+    transitionTypes: ["nav-forward"],
     illustration: <EventStack />,
   },
   {
     title: "My booked event",
-    description: "Talk about arrival, accessibility or your attendance.",
+    description: "Talk to attendees, or about arrival, accessibility or your attendance.",
     cta: "Choose a booking",
     href: "/my-events",
+    // Another section of the app, so the header holds still (globals.css).
+    transitionTypes: ["nav-forward", "nav-section"],
     illustration: <BookingCalendar />,
   },
   {
     title: "Customer support",
     description: "Get platform help with invoices or your account.",
     cta: "Contact platform support",
-    href: "/profile",
     illustration: <SupportWheel />,
   },
 ]
@@ -175,16 +179,16 @@ export default async function MessagesPage(props: PageProps<"/">) {
 }
 
 // Same frosted surface as the conversation list, so the entries and the
-// threads they lead to read as one screen. The whole card is the link. Each
-// opens on a picture of where the thread starts: a pile of events to ask
-// about, the month you have booked, or the things the platform team helps
-// with. Every picture shares one 16:10 frame, so the three cards line up.
+// threads they lead to read as one screen. The whole card is the link, or for
+// support the button that opens the dialog. Each opens on a picture of where
+// the thread starts: a pile of events to ask about, the month you have
+// booked, or the things the platform team helps with. Every picture shares
+// one 16:10 frame, so the three cards line up.
 function EntryCard({ entry }: { entry: (typeof entries)[number] }) {
-  return (
-    <Link
-      href={entry.href}
-      className="group relative isolate flex h-full flex-col gap-5 overflow-hidden rounded-2xl border border-border bg-card/85 p-5 shadow-[0_8px_30px_rgba(16,19,20,0.06)] outline-none backdrop-blur-xl transition-colors hover:bg-card focus-visible:ring-3 focus-visible:ring-ring/50 sm:p-6"
-    >
+  const className =
+    "group relative isolate flex h-full w-full flex-col gap-5 overflow-hidden rounded-2xl border border-border bg-card/85 p-5 text-left shadow-[0_8px_30px_rgba(16,19,20,0.06)] outline-none backdrop-blur-xl transition-colors hover:bg-card focus-visible:ring-3 focus-visible:ring-ring/50 sm:p-6"
+  const body = (
+    <>
       {/* A soft brand glow that rises a little way from the bottom edge on
           hover or focus. It sits behind the content. In dark the brand solid
           is too close to the card, so the glow uses the lighter brand step. */}
@@ -205,7 +209,23 @@ function EntryCard({ entry }: { entry: (typeof entries)[number] }) {
           className="size-4 transition-transform duration-200 ease-out group-hover:translate-x-0.5 motion-reduce:transition-none"
         />
       </span>
+    </>
+  )
+
+  return entry.href ? (
+    <Link
+      href={entry.href}
+      transitionTypes={entry.transitionTypes}
+      className={className}
+    >
+      {body}
     </Link>
+  ) : (
+    <SupportDialog>
+      <button type="button" className={className}>
+        {body}
+      </button>
+    </SupportDialog>
   )
 }
 

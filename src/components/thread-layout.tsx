@@ -17,12 +17,14 @@ const card =
 // over the chat from a button in the header.
 export function ThreadLayout({
   backHref,
+  backLabel = "Back to Messages",
   heading,
   detailsLabel,
   details,
   children,
 }: {
   backHref: string
+  backLabel?: string
   heading: ReactNode
   detailsLabel: string
   details: ReactNode
@@ -74,7 +76,7 @@ export function ThreadLayout({
             <Link
               href={backHref}
               transitionTypes={["nav-back"]}
-              aria-label="Back to Messages"
+              aria-label={backLabel}
             >
               <ArrowLeft aria-hidden="true" className="size-5" />
             </Link>

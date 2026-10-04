@@ -107,8 +107,9 @@ Tickets with the platform, for invoices, payments, or the account. A ticket can 
 - Switch between people, event conversations, and support.
 - Select a conversation and read its thread.
 - Reply in the open thread.
+- Start a support ticket from the Customer support entry. A dialog asks for a topic, the booking when it matters, and the message, then opens the new ticket. There is no subject line: the topic names the ticket. It points the customer to an open ticket about the same booking, and to the organizer for questions about the venue, schedule, or access.
 
-Starting a thread from an event card, from a booking, from a speaker or attendee profile, or from account and billing is outside this screen. Those entries only explain where a thread comes from.
+Starting a thread from an event card, from a booking, or from a speaker or attendee profile is outside this screen. Those entries only explain where a thread comes from.
 
 ## What not to copy from the earlier wireframe
 

@@ -637,6 +637,16 @@
     animation-duration: 300ms;
     animation-timing-function: ease-out;
 }
+/* Moving between sections keeps the app frame. The sky and the header are
+   the same on both sides, so they stay live instead of crossfading, and the
+   tab bar pill is seen moving to its new section while only the page
+   slides. */
+html:active-view-transition-type(nav-section)::view-transition-old(root) {
+    display: none;
+}
+html:active-view-transition-type(nav-section)::view-transition-new(root) {
+    animation: none;
+}
 @keyframes page-fade {
     from {
         opacity: 0;

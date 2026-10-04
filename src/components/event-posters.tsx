@@ -37,16 +37,34 @@ export function Poster({
   return (
     <div
       className={cn("aspect-square overflow-hidden", className)}
-      style={{ background: posters[name].ground }}
+      style={{ background: posterGround(name) }}
     >
-      <svg
-        viewBox="0 0 100 100"
-        preserveAspectRatio="xMidYMid slice"
-        className="block size-full"
-      >
-        {posters[name].art}
-      </svg>
+      <PosterArt name={name} className="block size-full" />
     </div>
+  )
+}
+
+// The ground and the art apart, so an event cover can set its type over the
+// ground and tuck the art into a corner.
+export function posterGround(name: PosterName) {
+  return posters[name].ground
+}
+
+export function PosterArt({
+  name,
+  className,
+}: {
+  name: PosterName
+  className?: string
+}) {
+  return (
+    <svg
+      viewBox="0 0 100 100"
+      preserveAspectRatio="xMidYMid slice"
+      className={className}
+    >
+      {posters[name].art}
+    </svg>
   )
 }
 

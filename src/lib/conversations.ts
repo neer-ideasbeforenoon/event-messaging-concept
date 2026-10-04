@@ -1,3 +1,5 @@
+import { bookedEventInfo, bookedThreads } from "@/lib/bookings"
+
 // A photo or file shared in a thread. The url points at the file itself.
 export type Attachment = {
   name: string
@@ -400,6 +402,10 @@ export type EventInfo = {
   date: { month: string; day: string }
   when: string
   time: string
+  // Wall-clock times at the venue, with no zone, for the timeline and the
+  // calendar file.
+  starts: string
+  ends: string
   venue: string
   address: string
   host: string
@@ -412,6 +418,8 @@ export const events: Record<string, EventInfo> = {
     date: { month: "Nov", day: "18" },
     when: "Wednesday, 18 November 2026",
     time: "09:00 – Fri 20 Nov, 17:30",
+    starts: "2026-11-18T09:00",
+    ends: "2026-11-20T17:30",
     venue: "Riverside Exhibition Centre",
     address: "Royal Victoria Dock, London",
     host: "Global Reach Events",
@@ -423,6 +431,8 @@ export const events: Record<string, EventInfo> = {
     date: { month: "Dec", day: "06" },
     when: "Sunday, 6 December 2026",
     time: "09:30 – 17:00",
+    starts: "2026-12-06T09:30",
+    ends: "2026-12-06T17:00",
     venue: "Clyde Hall",
     address: "Halle Street, Glasgow",
     host: "Design Futures",
@@ -434,6 +444,8 @@ export const events: Record<string, EventInfo> = {
     date: { month: "Jan", day: "22" },
     when: "Friday, 22 January 2027",
     time: "18:00 – 21:00",
+    starts: "2027-01-22T18:00",
+    ends: "2027-01-22T21:00",
     venue: "Werkhalle",
     address: "Kreuzberg, Berlin",
     host: "DesignOps Berlin",
@@ -445,6 +457,8 @@ export const events: Record<string, EventInfo> = {
     date: { month: "Nov", day: "12" },
     when: "Thursday, 12 November 2026",
     time: "09:00 – 18:00",
+    starts: "2026-11-12T09:00",
+    ends: "2026-11-12T18:00",
     venue: "Pier 7 Conference Centre",
     address: "Amsterdam",
     host: "Product Leaders Collective",
@@ -452,6 +466,42 @@ export const events: Record<string, EventInfo> = {
     about:
       "A day for heads of product and the people working towards it. Sessions cover strategy, roadmapping under pressure, and building product culture, with roundtables in the afternoon. Breakfast, lunch, and the closing reception are included.",
   },
+  ...bookedEventInfo,
+}
+
+// Bookings the customer has not written to the organizer about. Product
+// Leaders Summit was paid for (see the support ticket); the rest are the
+// stand-ins in bookings.ts. Each lists under My events, and opening one starts
+// the organizer thread with the booking already attached. Like a new thread
+// with an attendee, it has no messages until the customer sends one.
+const unstartedThreads: EventConversation[] = [
+  {
+    id: "product-leaders-summit-2026",
+    group: "event",
+    title: "Product Leaders Summit 2026",
+    date: { month: "Nov", day: "12" },
+    with: "Joris de Vries",
+    subject: "New conversation",
+    updated: "",
+    booking: "1 Summit pass",
+    messages: [],
+  },
+  ...bookedThreads,
+]
+
+export function newOrganizerThread(id: string) {
+  return unstartedThreads.find((thread) => thread.id === id)
+}
+
+// Every event the customer has booked, soonest first, with the organizer
+// thread its card opens.
+export function bookedEvents() {
+  return [...conversations, ...unstartedThreads]
+    .filter(
+      (c): c is EventConversation => c.group === "event" && Boolean(c.booking)
+    )
+    .map((thread) => ({ thread, event: events[thread.title] }))
+    .sort((a, b) => a.event.starts.localeCompare(b.event.starts))
 }
 
 // People the customer already has a thread with who are going to this event.

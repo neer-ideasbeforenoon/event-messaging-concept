@@ -8,15 +8,18 @@ import { newThreadWith } from "@/lib/attendees"
 import {
   conversations,
   eventThread,
+  newOrganizerThread,
   personContext,
   readTrail,
   threadHref,
   withYou,
   type Conversation,
 } from "@/lib/conversations"
+import { newTicket } from "@/lib/support"
 
 // Existing threads are built ahead. A new thread with someone going to an
-// event renders on request.
+// event, or with the organizer of a booked event, and a support ticket just
+// sent from the inbox render on request.
 export function generateStaticParams() {
   return conversations.map(({ id }) => ({ id }))
 }
@@ -50,15 +53,23 @@ export default async function ConversationPage(
   props: PageProps<"/messages/[id]">
 ) {
   const { id } = await props.params
+  const query = await props.searchParams
   const existing = conversations.find((c) => c.id === id)
-  const conversation = existing ?? newThreadWith(id)
+  const conversation =
+    existing ??
+    newThreadWith(id) ??
+    newOrganizerThread(id) ??
+    newTicket(id, query)
   if (!conversation) notFound()
 
   // Back returns to the thread this one was opened from, if any.
-  const trail = readTrail((await props.searchParams).from).filter(
+  const from = readTrail(query.from)
+  const trail = from.filter(
     (step) =>
       step !== id &&
-      (conversations.some((c) => c.id === step) || newThreadWith(step))
+      (conversations.some((c) => c.id === step) ||
+        newThreadWith(step) ||
+        newOrganizerThread(step))
   )
   const previous = trail.at(-1)
 
@@ -70,6 +81,8 @@ export default async function ConversationPage(
       : undefined
   const backHref = previous
     ? threadHref(previous, trail.slice(0, -1))
+    : from.at(-1) === "my-events"
+    ? "/my-events"
     : organizerThread
     ? `/messages/${organizerThread.id}`
     : {
@@ -85,6 +98,9 @@ export default async function ConversationPage(
       <main className="flex h-dvh flex-col sm:px-6 sm:py-6 lg:py-8">
         <ThreadLayout
           backHref={backHref}
+          backLabel={
+            backHref === "/my-events" ? "Back to My events" : undefined
+          }
           detailsLabel={details}
           details={
             <ThreadDetails
