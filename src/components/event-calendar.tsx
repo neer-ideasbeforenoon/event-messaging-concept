@@ -44,6 +44,7 @@ export function EventCalendar({
   const inMonth = events.filter((event) => event.date.startsWith(month))
   const year = month.slice(0, 4)
   const monthName = format(`${month}-01`, { month: "long" })
+  const days = daysOf(month)
 
   return (
     <div className="flex flex-col gap-4">
@@ -92,8 +93,10 @@ export function EventCalendar({
           ))}
         </div>
 
-        <ol className="mt-2 grid grid-cols-7 overflow-hidden rounded-xl border-t border-l border-border">
-          {daysOf(month).map((cell, index) => {
+        {/* Not clipped, so a photo can reach past its day. The corner days
+            round themselves instead. */}
+        <ol className="mt-2 grid grid-cols-7 rounded-xl border-t border-l border-border">
+          {days.map((cell, index) => {
             const booked = cell.outside
               ? []
               : inMonth.filter((event) => event.date === cell.date)
@@ -102,7 +105,11 @@ export function EventCalendar({
                 key={cell.date}
                 className={cn(
                   "relative flex min-h-14 flex-col gap-1 border-r border-b border-border p-1 sm:min-h-28 sm:gap-2 sm:p-2",
-                  cell.outside && "bg-well/40"
+                  cell.outside && "bg-well/40",
+                  index === 0 && "rounded-tl-xl",
+                  index === 6 && "rounded-tr-xl",
+                  index === days.length - 7 && "rounded-bl-xl",
+                  index === days.length - 1 && "rounded-br-xl"
                 )}
               >
                 <span
@@ -146,10 +153,12 @@ export function EventCalendar({
   )
 }
 
-// An instant photo pinned to the day: a white frame, the poster, and the time
-// and name on the strip below. On a phone it is just the poster. Resting on
-// it, or tabbing to it, opens the event's details beside it. Touch has no
-// hover, so a tap goes straight to the thread.
+// A square instant photo pinned to the day: a white frame, the poster, which
+// carries the name, and the time on the strip below. On a phone it is just
+// the poster. On wider screens it is a little wider than its day, so it
+// overhangs the lines either side the way a photo pinned to a planner would.
+// Resting on it, or tabbing to it, opens the event's details beside it. Touch
+// has no hover, so a tap goes straight to the thread.
 function PinnedEvent({ event, tilt }: { event: MyEvent; tilt: number }) {
   return (
     <HoverCard openDelay={200} closeDelay={120}>
@@ -183,21 +192,19 @@ function PinnedPhoto({
       href={event.href}
       transitionTypes={["nav-forward"]}
       style={{ rotate: `${tilt}deg` }}
-      className="group relative z-10 block rounded-[3px] bg-white p-0.5 text-neutral-12 shadow-[0_8px_18px_rgba(16,19,20,0.22),0_1px_2px_rgba(16,19,20,0.16)] outline-none transition-[translate,rotate,box-shadow] duration-300 ease-fluid hover:-translate-y-1 hover:rotate-0! focus-visible:rotate-0! focus-visible:ring-3 focus-visible:ring-ring/50 motion-reduce:transition-none sm:p-1 sm:pb-1.5 dark:bg-neutral-12 dark:text-neutral-1"
+      className="group relative z-10 flex aspect-square flex-col sm:-mx-3.5 rounded-[3px] bg-white p-0.5 text-neutral-12 shadow-[0_8px_18px_rgba(16,19,20,0.22),0_1px_2px_rgba(16,19,20,0.16)] outline-none transition-[translate,rotate,box-shadow] duration-300 ease-fluid hover:-translate-y-1 hover:rotate-0! focus-visible:rotate-0! focus-visible:ring-3 focus-visible:ring-ring/50 motion-reduce:transition-none sm:p-1 dark:bg-neutral-12 dark:text-neutral-1"
     >
       <EventCover
         title={event.title}
-        className="aspect-square rounded-[2px]"
+        className="aspect-auto min-h-0 flex-1 rounded-[2px]"
       />
-      <span className="mt-1 hidden px-0.5 sm:block">
-        <span className="block text-[11px] leading-tight font-semibold tabular-nums opacity-70">
-          {event.time}
-        </span>
-        <span className="line-clamp-2 text-caption leading-tight font-semibold">
-          {event.title}
-        </span>
+      <span
+        aria-hidden="true"
+        className="mt-1 hidden px-0.5 text-[11px] leading-tight font-semibold tabular-nums opacity-70 sm:block"
+      >
+        {event.time}
       </span>
-      <span className="sr-only sm:hidden">
+      <span className="sr-only">
         {event.title}, {event.time}
       </span>
     </Link>
