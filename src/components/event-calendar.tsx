@@ -153,9 +153,9 @@ export function EventCalendar({
   )
 }
 
-// A square instant photo pinned to the day: a white frame, the poster, which
-// carries the name, and the time on the strip below. On a phone it is just
-// the poster. On wider screens it is a little wider than its day, so it
+// A near-square instant photo pinned to the day: a white frame, the poster,
+// which carries the name, and the time on the strip below. On a phone it is
+// just the poster. On wider screens it is a little wider than its day, so it
 // overhangs the lines either side the way a photo pinned to a planner would.
 // Resting on it, or tabbing to it, opens the event's details beside it. Touch
 // has no hover, so a tap goes straight to the thread.
@@ -192,7 +192,7 @@ function PinnedPhoto({
       href={event.href}
       transitionTypes={["nav-forward"]}
       style={{ rotate: `${tilt}deg` }}
-      className="group relative z-10 flex aspect-square flex-col sm:-mx-3.5 rounded-[3px] bg-white p-0.5 text-neutral-12 shadow-[0_8px_18px_rgba(16,19,20,0.22),0_1px_2px_rgba(16,19,20,0.16)] outline-none transition-[translate,rotate,box-shadow] duration-300 ease-fluid hover:-translate-y-1 hover:rotate-0! focus-visible:rotate-0! focus-visible:ring-3 focus-visible:ring-ring/50 motion-reduce:transition-none sm:p-1 dark:bg-neutral-12 dark:text-neutral-1"
+      className="group relative z-10 flex aspect-[20/21] flex-col sm:-mx-3.5 rounded-[3px] bg-white p-0.5 text-neutral-12 shadow-[0_8px_18px_rgba(16,19,20,0.22),0_1px_2px_rgba(16,19,20,0.16)] outline-none transition-[translate,rotate,box-shadow] duration-300 ease-fluid hover:-translate-y-1 hover:rotate-0! focus-visible:rotate-0! focus-visible:ring-3 focus-visible:ring-ring/50 motion-reduce:transition-none sm:p-1 dark:bg-neutral-12 dark:text-neutral-1"
     >
       <EventCover
         title={event.title}
