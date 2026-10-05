@@ -62,8 +62,15 @@ export default async function ConversationPage(
     newTicket(id, query)
   if (!conversation) notFound()
 
-  // Back returns to the thread this one was opened from, if any.
+  // Back returns to the thread this one was opened from, if any. A path that
+  // began outside the inbox, on My events or an event's page, starts with
+  // that page, so Back from the first thread returns there.
   const from = readTrail(query.from)
+  const origin =
+    from[0] === "my-events" || from[0]?.startsWith("event:")
+      ? from[0]
+      : undefined
+  const start = origin ? [origin] : []
   const trail = from.filter(
     (step) =>
       step !== id &&
@@ -80,9 +87,11 @@ export default async function ConversationPage(
       ? eventThread(conversation.event)
       : undefined
   const backHref = previous
-    ? threadHref(previous, trail.slice(0, -1))
-    : from.at(-1) === "my-events"
+    ? threadHref(previous, [...start, ...trail.slice(0, -1)])
+    : origin === "my-events"
     ? "/my-events"
+    : origin
+    ? `/my-events/${origin.slice("event:".length)}`
     : organizerThread
     ? `/messages/${organizerThread.id}`
     : {
@@ -99,13 +108,17 @@ export default async function ConversationPage(
         <ThreadLayout
           backHref={backHref}
           backLabel={
-            backHref === "/my-events" ? "Back to My events" : undefined
+            backHref === "/my-events"
+              ? "Back to My events"
+              : origin && !previous
+              ? "Back to event details"
+              : undefined
           }
           detailsLabel={details}
           details={
             <ThreadDetails
               conversation={conversation}
-              trail={[...trail, conversation.id]}
+              trail={[...start, ...trail, conversation.id]}
             />
           }
           heading={

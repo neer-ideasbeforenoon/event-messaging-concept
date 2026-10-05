@@ -6,7 +6,9 @@ import { initials } from "@/lib/conversations"
 
 export type MyEvent = {
   id: string
+  // The organizer thread, and the event's details page.
   href: string
+  detailsHref: string
   title: string
   // The day and start time on the venue's clock: "2026-12-06", "09:30".
   date: string
@@ -25,12 +27,19 @@ export type MyEvent = {
   about: string
 }
 
-// A booked event as a card. The whole card opens the organizer thread, and
+// A booked event as a card. The whole card opens the event's details, and
 // the poster runs the full height of the card beside the details.
-export function EventCard({ event }: { event: MyEvent }) {
+// From the list view, the details page's Back returns to the list.
+export function EventCard({
+  event,
+  fromList,
+}: {
+  event: MyEvent
+  fromList?: boolean
+}) {
   return (
     <Link
-      href={event.href}
+      href={fromList ? `${event.detailsHref}?view=list` : event.detailsHref}
       transitionTypes={["nav-forward"]}
       className="group flex gap-4 rounded-2xl border border-border bg-card/85 p-3 pl-4 shadow-[0_8px_30px_rgba(16,19,20,0.06)] outline-none backdrop-blur-xl transition-colors hover:bg-card focus-visible:ring-3 focus-visible:ring-ring/50 sm:gap-6 sm:p-4 sm:pl-5"
     >
@@ -55,7 +64,11 @@ export function EventCard({ event }: { event: MyEvent }) {
         </p>
 
         <p className="mt-1.5 flex items-center gap-2 text-muted-foreground">
-          <MapPin aria-hidden="true" strokeWidth={1.75} className="size-5 shrink-0" />
+          <MapPin
+            aria-hidden="true"
+            strokeWidth={1.75}
+            className="size-5 shrink-0"
+          />
           <span className="min-w-0 truncate">{event.place}</span>
         </p>
 

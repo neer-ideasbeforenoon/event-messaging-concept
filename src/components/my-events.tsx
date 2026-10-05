@@ -166,7 +166,7 @@ export function MyEvents({
                 <ul className="mt-3.5 flex flex-col gap-4">
                   {day.events.map((event) => (
                     <li key={event.id}>
-                      <EventCard event={event} />
+                      <EventCard event={event} fromList />
                     </li>
                   ))}
                 </ul>

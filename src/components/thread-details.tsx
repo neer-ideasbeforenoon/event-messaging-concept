@@ -271,7 +271,7 @@ function Section({
 
 // A row in the Luma pattern: a small square tile, then a strong line and a
 // quiet line beside it.
-function DetailRow({
+export function DetailRow({
   tile,
   primary,
   secondary,
@@ -299,7 +299,7 @@ const tileClassName =
 // river, a park, main roads and side streets. Each venue turns the same
 // streets to its own angle, so two events never share a map. The pin stays
 // upright.
-function MapTile({ place }: { place: string }) {
+export function MapTile({ place }: { place: string }) {
   const turn =
     ([...place].reduce((sum, char) => sum + char.charCodeAt(0), 0) % 8) * 45
 

@@ -24,7 +24,7 @@ import {
   customerEmoji,
   customerName,
   customerTint,
-  eventThread,
+  organizerThread,
   threadHref,
   type PersonConversation,
 } from "@/lib/conversations"
@@ -196,7 +196,9 @@ export function EventPanelTabs({
   )
 }
 
-function AttendeeList({
+// Everyone going, grouped: the host, people the customer already talks to,
+// then everyone else. Shared with the people-going dialog on an event page.
+export function AttendeeList({
   query,
   event,
   going,
@@ -225,7 +227,7 @@ function AttendeeList({
   const matches = (...fields: string[]) =>
     !q || fields.some((field) => fold(field).includes(q))
 
-  const hostThread = eventThread(event)
+  const hostThread = organizerThread(event)
   const showHost = matches(organizer, host, "host organizer")
   const people = known.filter((p) => matches(p.with, p.role, p.subject))
   const showYou = booked && matches(customerName, "you")

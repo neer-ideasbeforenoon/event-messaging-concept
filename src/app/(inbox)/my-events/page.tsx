@@ -11,8 +11,9 @@ export const metadata: Metadata = { title: "My events" }
 const FACES = 5
 
 // The customer's booked events, soonest first, on a month calendar or grouped
-// by day in a list. Each event opens the organizer thread for it, so this is
-// where the "My booked event" entry on the inbox leads.
+// by day in a list. Each event opens its details page, and the organizer
+// thread from there. This is where the "My booked event" entry on the inbox
+// leads.
 export default async function MyEventsPage(props: PageProps<"/my-events">) {
   const view = (await props.searchParams).view === "list" ? "list" : "calendar"
 
@@ -34,6 +35,7 @@ export default async function MyEventsPage(props: PageProps<"/my-events">) {
     const card = {
       id: thread.id,
       href: `/messages/${thread.id}?from=my-events`,
+      detailsHref: `/my-events/${thread.id}`,
       title: thread.title,
       date,
       time,

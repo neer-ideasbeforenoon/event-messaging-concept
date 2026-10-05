@@ -493,6 +493,14 @@ export function newOrganizerThread(id: string) {
   return unstartedThreads.find((thread) => thread.id === id)
 }
 
+// The organizer thread for an event, started or not.
+export function organizerThread(event: string) {
+  return (
+    eventThread(event) ??
+    unstartedThreads.find((thread) => thread.title === event)
+  )
+}
+
 // Every event the customer has booked, soonest first, with the organizer
 // thread its card opens.
 export function bookedEvents() {

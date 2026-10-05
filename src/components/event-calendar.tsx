@@ -26,7 +26,7 @@ const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 // A month planner, the full-size version of the "My booked event"
 // illustration on the inbox. Each booked event is pinned to its day as an
 // instant photo of its poster, tilted a little until hovered. The whole photo
-// opens the organizer thread. On a phone the days are too narrow for a photo,
+// opens the event's details. On a phone the days are too narrow for a photo,
 // so a day carries a poster thumbnail and the month's cards follow the sheet.
 export function EventCalendar({
   events,
@@ -157,8 +157,8 @@ export function EventCalendar({
 // which carries the name, and the time on the strip below. On a phone it is
 // just the poster. On wider screens it is a little wider than its day, so it
 // overhangs the lines either side the way a photo pinned to a planner would.
-// Resting on it, or tabbing to it, opens the event's details beside it. Touch
-// has no hover, so a tap goes straight to the thread.
+// Resting on it, or tabbing to it, opens a summary beside it. Touch has no
+// hover, so a tap goes straight to the details page.
 function PinnedEvent({ event, tilt }: { event: MyEvent; tilt: number }) {
   return (
     <HoverCard openDelay={200} closeDelay={120}>
@@ -189,7 +189,7 @@ function PinnedPhoto({
   return (
     <Link
       {...props}
-      href={event.href}
+      href={event.detailsHref}
       transitionTypes={["nav-forward"]}
       style={{ rotate: `${tilt}deg` }}
       className="group relative z-10 flex aspect-[20/21] flex-col sm:-mx-3.5 rounded-[3px] bg-white p-0.5 text-neutral-12 shadow-[0_8px_18px_rgba(16,19,20,0.22),0_1px_2px_rgba(16,19,20,0.16)] outline-none transition-[translate,rotate,box-shadow] duration-300 ease-fluid hover:-translate-y-1 hover:rotate-0! focus-visible:rotate-0! focus-visible:ring-3 focus-visible:ring-ring/50 motion-reduce:transition-none sm:p-1 dark:bg-neutral-12 dark:text-neutral-1"
@@ -212,7 +212,7 @@ function PinnedPhoto({
 }
 
 // Everything about the booking at a glance: the cover, when and where, who
-// hosts it, what was booked, and a way into the organizer thread.
+// hosts it, what was booked, then the details page or the organizer thread.
 function EventDetails({ event }: { event: MyEvent }) {
   const [organizer, host] = event.hosts
   return (
@@ -267,12 +267,23 @@ function EventDetails({ event }: { event: MyEvent }) {
           </span>
         </div>
 
-        <Button asChild className="mt-4 h-9 w-full rounded-xl">
-          <Link href={event.href} transitionTypes={["nav-forward"]}>
-            <MessageSquare aria-hidden="true" />
-            Message {organizer.split(" ")[0]}, the organizer
-          </Link>
-        </Button>
+        <div className="mt-4 grid grid-cols-2 gap-2">
+          <Button asChild className="h-9 rounded-xl">
+            <Link href={event.detailsHref} transitionTypes={["nav-forward"]}>
+              View details
+            </Link>
+          </Button>
+          <Button asChild variant="outline" className="h-9 rounded-xl bg-card">
+            <Link
+              href={event.href}
+              transitionTypes={["nav-forward"]}
+              aria-label={`Message ${organizer}, the organizer`}
+            >
+              <MessageSquare aria-hidden="true" />
+              <span className="truncate">Message {organizer.split(" ")[0]}</span>
+            </Link>
+          </Button>
+        </div>
       </div>
     </>
   )
